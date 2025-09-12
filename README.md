@@ -12,6 +12,7 @@ GeoDoc
 │   │   └── main.css      # Gaya CSS untuk aplikasi
 │   ├── scripts
 │   │   └── app.js        # Kode JavaScript untuk pemrosesan gambar
+│   ├── petunjuk.html     # Dokumen HTML petunjuk teknis penggunaan aplikasi
 ├── README.md             # Dokumentasi proyek
 ```
 
