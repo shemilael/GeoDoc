@@ -104,17 +104,48 @@ body {
 }
 
 @media (max-width: 600px) {
-    body {
-        padding: 10px;
-    }
+  body {
+    padding: 5px;
+  }
 
-    h2 {
-        font-size: 1.5em;
-    }
+  h2 {
+    font-size: 1.2em;
+  }
 
-    #downloadBtn {
-        width: 100%;
-    }
+  #downloadBtn {
+    width: 100%;
+  }
+
+  .container {
+    padding: 0.5rem !important;
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+    border-radius: 0.5rem !important;
+  }
+
+  #sticky-settings, #settingsPanel {
+    padding: 0.5rem !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  #settingsPanel .grid {
+    grid-template-columns: 1fr !important;
+    gap: 0.5rem !important;
+  }
+
+  #settingsPanel label, #settingsPanel select, #settingsPanel input {
+    font-size: 0.85em !important;
+  }
+
+  #settingsPanel .mb-3, #settingsPanel .mb-2 {
+    margin-bottom: 0.5rem !important;
+  }
+
+  #settingsPanel .text-xs {
+    font-size: 0.75em !important;
+  }
+}
 }
 
 @media (max-width: 640px) {
@@ -130,4 +161,3 @@ body {
     font-size: 0.9rem;
     padding: 0.5rem 0;
   }
-}
