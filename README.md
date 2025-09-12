@@ -5,7 +5,7 @@ Proyek ini adalah aplikasi web yang memungkinkan pengguna mengunggah foto dan se
 ## Struktur Proyek
 
 ```
-photo-timestamp-location-app
+GeoDoc
 ├── src
 │   ├── index.html        # Dokumen HTML utama untuk aplikasi
 │   ├── styles
