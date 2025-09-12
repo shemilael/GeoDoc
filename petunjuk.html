@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dokumentasi GeoDoc</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f5f6fa;
+            color: #222;
+        }
+        .docs-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            width: 260px;
+            background: #232946;
+            color: #fff;
+            padding: 2rem 1rem 2rem 2rem;
+            box-shadow: 2px 0 8px rgba(0,0,0,0.04);
+            position: fixed;
+            height: 100vh;
+            top: 0;
+            left: 0;
+            z-index: 10;
+        }
+        .sidebar h2 {
+            color: #eebf63;
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+        }
+        .sidebar nav ul {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar nav ul li {
+            margin-bottom: 1rem;
+        }
+        .sidebar nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.2s;
+        }
+        .sidebar nav ul li a:hover, .sidebar nav ul li a.active {
+            color: #eebf63;
+        }
+        .main-content {
+            margin-left: 260px;
+            padding: 3rem 2rem 2rem 2rem;
+            max-width: 900px;
+            width: 100%;
+        }
+        .main-content h1 {
+            color: #232946;
+            font-size: 2.2rem;
+            margin-bottom: 1.5rem;
+        }
+        .main-content h2 {
+            color: #2a7ae2;
+            margin-top: 2.5rem;
+        }
+        .main-content ul, .main-content ol {
+            margin-left: 1.5rem;
+        }
+        .main-content .important {
+            color: #d9534f;
+            font-weight: bold;
+        }
+        .main-content .section {
+            margin-bottom: 2.5rem;
+        }
+        @media (max-width: 900px) {
+            .sidebar { display: none; }
+            .main-content { margin-left: 0; padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="docs-layout">
+        <aside class="sidebar">
+            <a href="index.html" style="display:block;text-align:center;margin-bottom:2rem;text-decoration:none;">
+                <button style="background:#eebf63;color:#232946;border:none;padding:0.7rem 1.5rem;border-radius:5px;font-size:1rem;cursor:pointer;font-weight:bold;box-shadow:0 2px 6px rgba(0,0,0,0.07);transition:background 0.2s;">Buka Aplikasi GeoDoc</button>
+            </a>
+            <h2>GeoDoc Docs</h2>
+            <nav>
+                <ul>
+                    <li><a href="#mulai" class="active">Mulai</a></li>
+                    <li><a href="#upload">Upload Foto</a></li>
+                    <li><a href="#input">Input & Analisis</a></li>
+                    <li><a href="#cek-metadata">Pengecekan Metadata</a></li>
+                    <li><a href="#hasil">Hasil & Label</a></li>
+                    <li><a href="#watermark">Watermark</a></li>
+                    <li><a href="#unduh">Unduh Foto</a></li>
+                    <li><a href="#selesai">Selesai</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="main-content">
+            <h1>Dokumentasi Penggunaan GeoDoc</h1>
+            <div class="section" id="mulai">
+                <h2>Mulai Proses</h2>
+                <p>Buka aplikasi GeoDoc di browser Anda untuk memulai pengecekan metadata foto.</p>
+            </div>
+            <div class="section" id="upload">
+                <h2>Upload Foto</h2>
+                <p>Pilih foto dokumentasi lapangan yang ingin Anda unggah ke sistem. Foto yang diunggah harus berformat gambar yang didukung oleh aplikasi.</p>
+            </div>
+            <div class="section" id="input">
+                <h2>Input & Analisis Foto</h2>
+                <p>Setelah foto dipilih, foto akan dimasukkan ke dalam sistem untuk dianalisis menggunakan <b>EXIF.js</b>, sebuah library JavaScript yang dapat membaca metadata gambar, seperti <b>timestamp</b> (waktu pengambilan) dan <b>geotagging</b> (koordinat lokasi).</p>
+            </div>
+            <div class="section" id="cek-metadata">
+                <h2>Pengecekan Metadata</h2>
+                <p>Sistem akan memeriksa apakah foto yang diunggah memiliki metadata yang mencakup:</p>
+                <ul>
+                    <li><b>Timestamp:</b> Waktu pengambilan foto.</li>
+                    <li><b>Geotagging:</b> Koordinat lokasi tempat foto diambil.</li>
+                </ul>
+            </div>
+            <div class="section" id="hasil">
+                <h2>Hasil Pengecekan & Label</h2>
+                <ul>
+                    <li>Jika metadata <b>tidak tersedia</b>, sistem akan menampilkan <span class="important">peringatan</span> bahwa waktu dan koordinat tidak ditemukan.</li>
+                    <li>Jika metadata <b>tersedia</b>, sistem akan menampilkan informasi berikut:
+                        <ul>
+                            <li>Waktu pengambilan foto.</li>
+                            <li>Lokasi pengambilan foto (koordinat geotagging).</li>
+                        </ul>
+                    </li>
+                </ul>
+                <p>Setelah itu, pengguna dapat mengatur:</p>
+                <ul>
+                    <li><b>Letak Font:</b> Tentukan posisi label teks (misalnya di atas, bawah, atau tengah foto).</li>
+                    <li><b>Warna Font:</b> Pilih warna font yang diinginkan.</li>
+                    <li><b>Ukuran Font:</b> Atur ukuran font sesuai kebutuhan.</li>
+                </ul>
+            </div>
+            <div class="section" id="watermark">
+                <h2>Menambahkan Watermark (Opsional)</h2>
+                <ul>
+                    <li>Pengguna dapat memilih untuk menambahkan watermark pada foto dengan cara mengunggah logo instansi.</li>
+                    <li><b>Atur Letak:</b> Tentukan posisi watermark (misalnya di sudut kiri atas, kanan bawah, dll).</li>
+                    <li><b>Atur Ukuran:</b> Sesuaikan ukuran watermark agar sesuai dengan foto.</li>
+                </ul>
+            </div>
+            <div class="section" id="unduh">
+                <h2>Unduh Foto</h2>
+                <p>Setelah foto diberi label dan watermark (opsional), pengguna dapat mengunduh foto yang telah diproses.</p>
+                <p>Pilih <b>Unduh</b> untuk menyimpan foto dengan label dan watermark sebagai bukti dokumentasi yang sah.</p>
+            </div>
+            <div class="section" id="selesai">
+                <h2>Selesai</h2>
+                <p>Foto siap digunakan sebagai bagian dari laporan kegiatan lapangan yang akuntabel dan transparan. Foto yang telah diproses dapat disertakan dalam laporan atau arsip dokumentasi.</p>
+                <p>Dengan menggunakan GeoDoc, Anda dapat memastikan dokumentasi lapangan yang lebih terpercaya dan akurat, dengan metadata yang tercatat secara jelas.</p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
