@@ -19,12 +19,12 @@ photo-timestamp-location-app
 
 1. **Klon repositori**:
    ```
-   git clone https://github.com/shemilael/photo-timestamp-location-app
+   git clone https://github.com/shemilael/GeoDoc.git
    ```
 
 2. **Masuk ke direktori proyek**:
    ```
-   cd photo-timestamp-location-app
+   cd GeoDoc
    ```
 
 3. **Buka file `index.html` di browser web Anda** untuk melihat aplikasi.
@@ -49,4 +49,4 @@ Kontribusi sangat diterima! Silakan ajukan pull request atau buka issue untuk sa
 
 ## Lisensi
 
-Proyek ini menggunakan lisensi MIT. Lihat file [LICENSE](https://github.com/shemilael/photo-timestamp-location-app/blob/main/LICENSE)
+Proyek ini menggunakan lisensi MIT. Lihat file [LICENSE](https://github.com/shemilael/GeoDoc/blob/main/LICENSE)
