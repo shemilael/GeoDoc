@@ -14,7 +14,7 @@
 - **Watermark**: Tambahkan logo instansi atau watermark teks, atur posisi dan ukuran.
 - **Download Hasil**: Unduh foto yang sudah diberi label dan watermark.
 - **Mobile Friendly**: Tampilan responsif, mudah digunakan di HP maupun desktop.
-- **Petunjuk Penggunaan**: Tersedia halaman [petunjuk interaktif](petunjuk.html) lengkap dengan gambar.
+- **Petunjuk Penggunaan**: Tersedia halaman [petunjuk interaktif]([petunjuk.html](https://shemilael.github.io/GeoDoc/petunjuk.html)) lengkap dengan gambar.
 
 ## Struktur Proyek
 
@@ -38,7 +38,7 @@ GeoDoc/
    git clone https://github.com/shemilael/GeoDoc.git
    cd GeoDoc
    ```
-2. **Buka file `index.html` di browser** (cukup klik dua kali atau drag ke browser).
+2. **Buka file [index.html]([index.html](https://shemilael.github.io/GeoDoc/index.html)) di browser** (cukup klik dua kali atau drag ke browser).
 
 Tidak perlu instalasi server atau dependensi tambahan.
 
