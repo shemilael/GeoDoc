@@ -221,7 +221,7 @@ upload.addEventListener('change', async function () {
     img.onload = async function () {
       let exifTimeout = setTimeout(function() {
         if (!exifProcessed) {
-          info.innerHTML = '<span style="color:red;font-weight:bold">Gagal membaca metadata EXIF. Browser Anda kemungkinan membatasi akses metadata (khususnya di perangkat mobile). Silakan coba di browser/PC lain.</span>';
+          info.innerHTML = '<span style="color:red;font-weight:bold">Gagal membaca metadata EXIF.<br>Browser Anda (terutama di perangkat mobile) kemungkinan membatasi akses metadata lokasi demi privasi.<br><br><b>Solusi:</b><br>- Coba upload foto dari komputer/PC.<br>- Atau gunakan browser mobile lain.<br>- Pastikan file asli belum diubah/dikirim lewat WhatsApp/galeri yang bisa menghapus metadata.</span>';
           result.src = e.target.result;
           downloadBtn.style.display = "none";
         }
