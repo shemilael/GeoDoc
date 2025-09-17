@@ -9,14 +9,30 @@ const info = document.getElementById('info');
 
 function toDecimal(coord, ref) {
   if (!Array.isArray(coord) || coord.length !== 3) return null;
-  for (let i = 0; i < 3; i++) {
-    if (!coord[i] || typeof coord[i].numerator !== 'number' || typeof coord[i].denominator !== 'number' || coord[i].denominator === 0) {
+  let degrees, minutes, seconds;
+  // Format EXIF.js: array of objects {numerator, denominator}
+  if (typeof coord[0] === 'object' && coord[0] !== null && 'numerator' in coord[0] && 'denominator' in coord[0]) {
+    if (
+      typeof coord[0].numerator === 'number' && typeof coord[0].denominator === 'number' && coord[0].denominator !== 0 &&
+      typeof coord[1].numerator === 'number' && typeof coord[1].denominator === 'number' && coord[1].denominator !== 0 &&
+      typeof coord[2].numerator === 'number' && typeof coord[2].denominator === 'number' && coord[2].denominator !== 0
+    ) {
+      degrees = coord[0].numerator / coord[0].denominator;
+      minutes = coord[1].numerator / coord[1].denominator;
+      seconds = coord[2].numerator / coord[2].denominator;
+    } else {
       return null;
     }
+  } else if (
+    typeof coord[0] === 'number' && typeof coord[1] === 'number' && typeof coord[2] === 'number'
+  ) {
+    // Format array angka: [deg, min, sec]
+    degrees = coord[0];
+    minutes = coord[1];
+    seconds = coord[2];
+  } else {
+    return null;
   }
-  const degrees = coord[0].numerator / coord[0].denominator;
-  const minutes = coord[1].numerator / coord[1].denominator;
-  const seconds = coord[2].numerator / coord[2].denominator;
   let decimal = degrees + minutes / 60 + seconds / 3600;
   if (ref === "S" || ref === "W") decimal *= -1;
   return decimal;
