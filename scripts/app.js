@@ -8,31 +8,9 @@ const downloadBtn = document.getElementById('downloadBtn');
 const info = document.getElementById('info');
 
 function toDecimal(coord, ref) {
-  if (!Array.isArray(coord) || coord.length !== 3) return null;
-  let degrees, minutes, seconds;
-  // Format EXIF.js: array of objects {numerator, denominator}
-  if (typeof coord[0] === 'object' && coord[0] !== null && 'numerator' in coord[0] && 'denominator' in coord[0]) {
-    if (
-      typeof coord[0].numerator === 'number' && typeof coord[0].denominator === 'number' && coord[0].denominator !== 0 &&
-      typeof coord[1].numerator === 'number' && typeof coord[1].denominator === 'number' && coord[1].denominator !== 0 &&
-      typeof coord[2].numerator === 'number' && typeof coord[2].denominator === 'number' && coord[2].denominator !== 0
-    ) {
-      degrees = coord[0].numerator / coord[0].denominator;
-      minutes = coord[1].numerator / coord[1].denominator;
-      seconds = coord[2].numerator / coord[2].denominator;
-    } else {
-      return null;
-    }
-  } else if (
-    typeof coord[0] === 'number' && typeof coord[1] === 'number' && typeof coord[2] === 'number'
-  ) {
-    // Format array angka: [deg, min, sec]
-    degrees = coord[0];
-    minutes = coord[1];
-    seconds = coord[2];
-  } else {
-    return null;
-  }
+  const degrees = coord[0].numerator / coord[0].denominator;
+  const minutes = coord[1].numerator / coord[1].denominator;
+  const seconds = coord[2].numerator / coord[2].denominator;
   let decimal = degrees + minutes / 60 + seconds / 3600;
   if (ref === "S" || ref === "W") decimal *= -1;
   return decimal;
@@ -76,11 +54,7 @@ function renderAll(img, exifData) {
   if (lat && lon && latRef && lonRef) {
     const latitude = toDecimal(lat, latRef);
     const longitude = toDecimal(lon, lonRef);
-    if (typeof latitude === 'number' && !isNaN(latitude) && typeof longitude === 'number' && !isNaN(longitude)) {
-      latlonText = `Lat: ${latitude.toFixed(6)}, Lon: ${longitude.toFixed(6)}`;
-    } else {
-      latlonText = "Latitude: tidak tersedia, Longitude: tidak tersedia";
-    }
+    latlonText = `Lat: ${latitude.toFixed(6)}, Lon: ${longitude.toFixed(6)}`;
   }
   const lines = [latlonText, date, locationText];
 
@@ -217,72 +191,39 @@ upload.addEventListener('change', async function () {
   const reader = new FileReader();
   reader.onload = function (e) {
     const img = new Image();
-    let exifProcessed = false;
     img.onload = async function () {
-      let exifTimeout = setTimeout(function() {
-        if (!exifProcessed) {
-          info.innerHTML = '<span style="color:red;font-weight:bold">Gagal membaca metadata EXIF.<br>Browser Anda (terutama di perangkat mobile) kemungkinan membatasi akses metadata lokasi demi privasi.<br><br><b>Solusi:</b><br>- Coba upload foto dari komputer/PC.<br>- Atau gunakan browser mobile lain.<br>- Pastikan file asli belum diubah/dikirim lewat WhatsApp/galeri yang bisa menghapus metadata.</span>';
+      EXIF.getData(img, async function () {
+        const date = EXIF.getTag(this, "DateTimeOriginal") || null;
+        const lat = EXIF.getTag(this, "GPSLatitude");
+        const lon = EXIF.getTag(this, "GPSLongitude");
+        const latRef = EXIF.getTag(this, "GPSLatitudeRef");
+        const lonRef = EXIF.getTag(this, "GPSLongitudeRef");
+        // Cek metadata minimal: tanggal dan GPS
+        if (!date || !lat || !lon || !latRef || !lonRef) {
+          info.innerHTML = '<span style="color:red;font-weight:bold">Foto dokumentasi kegiatan anda tidak memiliki metadata sehingga tidak dapat diproses</span>';
           result.src = e.target.result;
           downloadBtn.style.display = "none";
+          return;
         }
-      }, 2000); // 2 detik timeout
-      try {
-        EXIF.getData(img, async function () {
-          exifProcessed = true;
-          clearTimeout(exifTimeout);
-          const date = EXIF.getTag(this, "DateTimeOriginal") || null;
-          const lat = EXIF.getTag(this, "GPSLatitude");
-          const lon = EXIF.getTag(this, "GPSLongitude");
-          const latRef = EXIF.getTag(this, "GPSLatitudeRef");
-          const lonRef = EXIF.getTag(this, "GPSLongitudeRef");
-          // Cek metadata minimal: tanggal dan GPS
-          if (
-            date == null ||
-            lat == null || !Array.isArray(lat) || lat.length !== 3 ||
-            lon == null || !Array.isArray(lon) || lon.length !== 3 ||
-            latRef == null || lonRef == null
-          ) {
-            info.innerHTML = '<span style="color:red;font-weight:bold">Foto dokumentasi kegiatan anda tidak memiliki metadata sehingga tidak dapat diproses</span>' +
-              '<br><span style="color:#555;font-size:0.95em">[Debug EXIF]<br>' +
-              'DateTimeOriginal: ' + (date ? JSON.stringify(date) : '<i>null</i>') + '<br>' +
-              'GPSLatitude: ' + (lat ? JSON.stringify(lat) : '<i>null</i>') + ' <br><b>typeof:</b> ' + (typeof lat) + '<br>' +
-              'GPSLongitude: ' + (lon ? JSON.stringify(lon) : '<i>null</i>') + ' <br><b>typeof:</b> ' + (typeof lon) + '<br>' +
-              'GPSLatitudeRef: ' + (latRef ? JSON.stringify(latRef) : '<i>null</i>') + ' <br><b>typeof:</b> ' + (typeof latRef) + '<br>' +
-              'GPSLongitudeRef: ' + (lonRef ? JSON.stringify(lonRef) : '<i>null</i>') + ' <br><b>typeof:</b> ' + (typeof lonRef) +
-              '</span>';
-            result.src = e.target.result;
-            downloadBtn.style.display = "none";
-            return;
-          }
-          let locationText = "Location not available";
-          let latitudeText = "Latitude: tidak tersedia";
-          let longitudeText = "Longitude: tidak tersedia";
-          if (lat && lon && latRef && lonRef) {
-            const latitude = toDecimal(lat, latRef);
-            const longitude = toDecimal(lon, lonRef);
-            locationText = await getLocation(latitude, longitude);
-            latitudeText = `Latitude: ${latitude.toFixed(6)}`;
-            longitudeText = `Longitude: ${longitude.toFixed(6)}`;
-          }
-          info.innerHTML = `
-            <strong>Timestamp:</strong> ${date}<br>
-            <strong>${latitudeText}</strong><br>
-            <strong>${longitudeText}</strong>
-          `;
-          originalImageData = e.target.result;
-          originalExifData = { date, lat, lon, latRef, lonRef, locationText };
-          renderAll(img, originalExifData);
-        });
-      } catch (err) {
-        clearTimeout(exifTimeout);
-        info.innerHTML = '<span style="color:red;font-weight:bold">Terjadi error saat membaca metadata EXIF: ' + err.message + '</span>';
-        result.src = e.target.result;
-        downloadBtn.style.display = "none";
-      }
-    };
-    img.onerror = function() {
-      info.innerHTML = '<span style="color:red;font-weight:bold">Gagal memuat gambar. Format file tidak didukung atau file rusak.</span>';
-      downloadBtn.style.display = "none";
+        let locationText = "Location not available";
+        let latitudeText = "Latitude: tidak tersedia";
+        let longitudeText = "Longitude: tidak tersedia";
+        if (lat && lon && latRef && lonRef) {
+          const latitude = toDecimal(lat, latRef);
+          const longitude = toDecimal(lon, lonRef);
+          locationText = await getLocation(latitude, longitude);
+          latitudeText = `Latitude: ${latitude.toFixed(6)}`;
+          longitudeText = `Longitude: ${longitude.toFixed(6)}`;
+        }
+        info.innerHTML = `
+          <strong>Timestamp:</strong> ${date}<br>
+          <strong>${latitudeText}</strong><br>
+          <strong>${longitudeText}</strong>
+        `;
+        originalImageData = e.target.result;
+        originalExifData = { date, lat, lon, latRef, lonRef, locationText };
+        renderAll(img, originalExifData);
+      });
     };
     img.src = e.target.result;
   };
