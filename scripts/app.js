@@ -234,10 +234,10 @@ upload.addEventListener('change', async function () {
           info.innerHTML = '<span style="color:red;font-weight:bold">Foto dokumentasi kegiatan anda tidak memiliki metadata sehingga tidak dapat diproses</span>' +
             '<br><span style="color:#555;font-size:0.95em">[Debug EXIF]<br>' +
             'DateTimeOriginal: ' + (date ? JSON.stringify(date) : '<i>null</i>') + '<br>' +
-            'GPSLatitude: ' + (lat ? JSON.stringify(lat) : '<i>null</i>') + '<br>' +
-            'GPSLongitude: ' + (lon ? JSON.stringify(lon) : '<i>null</i>') + '<br>' +
-            'GPSLatitudeRef: ' + (latRef ? JSON.stringify(latRef) : '<i>null</i>') + '<br>' +
-            'GPSLongitudeRef: ' + (lonRef ? JSON.stringify(lonRef) : '<i>null</i>') +
+            'GPSLatitude: ' + (lat ? JSON.stringify(lat) : '<i>null</i>') + ' <br><b>typeof:</b> ' + (typeof lat) + '<br>' +
+            'GPSLongitude: ' + (lon ? JSON.stringify(lon) : '<i>null</i>') + ' <br><b>typeof:</b> ' + (typeof lon) + '<br>' +
+            'GPSLatitudeRef: ' + (latRef ? JSON.stringify(latRef) : '<i>null</i>') + ' <br><b>typeof:</b> ' + (typeof latRef) + '<br>' +
+            'GPSLongitudeRef: ' + (lonRef ? JSON.stringify(lonRef) : '<i>null</i>') + ' <br><b>typeof:</b> ' + (typeof lonRef) +
             '</span>';
           result.src = e.target.result;
           downloadBtn.style.display = "none";
