@@ -8,6 +8,12 @@ const downloadBtn = document.getElementById('downloadBtn');
 const info = document.getElementById('info');
 
 function toDecimal(coord, ref) {
+  if (!Array.isArray(coord) || coord.length !== 3) return null;
+  for (let i = 0; i < 3; i++) {
+    if (!coord[i] || typeof coord[i].numerator !== 'number' || typeof coord[i].denominator !== 'number' || coord[i].denominator === 0) {
+      return null;
+    }
+  }
   const degrees = coord[0].numerator / coord[0].denominator;
   const minutes = coord[1].numerator / coord[1].denominator;
   const seconds = coord[2].numerator / coord[2].denominator;
@@ -54,7 +60,11 @@ function renderAll(img, exifData) {
   if (lat && lon && latRef && lonRef) {
     const latitude = toDecimal(lat, latRef);
     const longitude = toDecimal(lon, lonRef);
-    latlonText = `Lat: ${latitude.toFixed(6)}, Lon: ${longitude.toFixed(6)}`;
+    if (typeof latitude === 'number' && !isNaN(latitude) && typeof longitude === 'number' && !isNaN(longitude)) {
+      latlonText = `Lat: ${latitude.toFixed(6)}, Lon: ${longitude.toFixed(6)}`;
+    } else {
+      latlonText = "Latitude: tidak tersedia, Longitude: tidak tersedia";
+    }
   }
   const lines = [latlonText, date, locationText];
 
