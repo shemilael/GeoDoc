@@ -200,7 +200,7 @@ upload.addEventListener('change', async function () {
         const lonRef = EXIF.getTag(this, "GPSLongitudeRef");
         // Cek metadata minimal: tanggal dan GPS
         if (!date || !lat || !lon || !latRef || !lonRef) {
-          info.innerHTML = '<span style="color:red;font-weight:bold">Foto dokumentasi kegiatan anda tidak memiliki metadata sehingga tidak valid dan akuntabel</span>';
+          info.innerHTML = '<span style="color:red;font-weight:bold">Foto dokumentasi kegiatan anda tidak memiliki metadata sehingga tidak dapat diproses</span>';
           result.src = e.target.result;
           downloadBtn.style.display = "none";
           return;
