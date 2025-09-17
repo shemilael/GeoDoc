@@ -217,51 +217,72 @@ upload.addEventListener('change', async function () {
   const reader = new FileReader();
   reader.onload = function (e) {
     const img = new Image();
+    let exifProcessed = false;
     img.onload = async function () {
-      EXIF.getData(img, async function () {
-        const date = EXIF.getTag(this, "DateTimeOriginal") || null;
-        const lat = EXIF.getTag(this, "GPSLatitude");
-        const lon = EXIF.getTag(this, "GPSLongitude");
-        const latRef = EXIF.getTag(this, "GPSLatitudeRef");
-        const lonRef = EXIF.getTag(this, "GPSLongitudeRef");
-        // Cek metadata minimal: tanggal dan GPS
-        if (
-          date == null ||
-          lat == null || !Array.isArray(lat) || lat.length !== 3 ||
-          lon == null || !Array.isArray(lon) || lon.length !== 3 ||
-          latRef == null || lonRef == null
-        ) {
-          info.innerHTML = '<span style="color:red;font-weight:bold">Foto dokumentasi kegiatan anda tidak memiliki metadata sehingga tidak dapat diproses</span>' +
-            '<br><span style="color:#555;font-size:0.95em">[Debug EXIF]<br>' +
-            'DateTimeOriginal: ' + (date ? JSON.stringify(date) : '<i>null</i>') + '<br>' +
-            'GPSLatitude: ' + (lat ? JSON.stringify(lat) : '<i>null</i>') + ' <br><b>typeof:</b> ' + (typeof lat) + '<br>' +
-            'GPSLongitude: ' + (lon ? JSON.stringify(lon) : '<i>null</i>') + ' <br><b>typeof:</b> ' + (typeof lon) + '<br>' +
-            'GPSLatitudeRef: ' + (latRef ? JSON.stringify(latRef) : '<i>null</i>') + ' <br><b>typeof:</b> ' + (typeof latRef) + '<br>' +
-            'GPSLongitudeRef: ' + (lonRef ? JSON.stringify(lonRef) : '<i>null</i>') + ' <br><b>typeof:</b> ' + (typeof lonRef) +
-            '</span>';
+      let exifTimeout = setTimeout(function() {
+        if (!exifProcessed) {
+          info.innerHTML = '<span style="color:red;font-weight:bold">Gagal membaca metadata EXIF. Browser Anda kemungkinan membatasi akses metadata (khususnya di perangkat mobile). Silakan coba di browser/PC lain.</span>';
           result.src = e.target.result;
           downloadBtn.style.display = "none";
-          return;
         }
-        let locationText = "Location not available";
-        let latitudeText = "Latitude: tidak tersedia";
-        let longitudeText = "Longitude: tidak tersedia";
-        if (lat && lon && latRef && lonRef) {
-          const latitude = toDecimal(lat, latRef);
-          const longitude = toDecimal(lon, lonRef);
-          locationText = await getLocation(latitude, longitude);
-          latitudeText = `Latitude: ${latitude.toFixed(6)}`;
-          longitudeText = `Longitude: ${longitude.toFixed(6)}`;
-        }
-        info.innerHTML = `
-          <strong>Timestamp:</strong> ${date}<br>
-          <strong>${latitudeText}</strong><br>
-          <strong>${longitudeText}</strong>
-        `;
-        originalImageData = e.target.result;
-        originalExifData = { date, lat, lon, latRef, lonRef, locationText };
-        renderAll(img, originalExifData);
-      });
+      }, 2000); // 2 detik timeout
+      try {
+        EXIF.getData(img, async function () {
+          exifProcessed = true;
+          clearTimeout(exifTimeout);
+          const date = EXIF.getTag(this, "DateTimeOriginal") || null;
+          const lat = EXIF.getTag(this, "GPSLatitude");
+          const lon = EXIF.getTag(this, "GPSLongitude");
+          const latRef = EXIF.getTag(this, "GPSLatitudeRef");
+          const lonRef = EXIF.getTag(this, "GPSLongitudeRef");
+          // Cek metadata minimal: tanggal dan GPS
+          if (
+            date == null ||
+            lat == null || !Array.isArray(lat) || lat.length !== 3 ||
+            lon == null || !Array.isArray(lon) || lon.length !== 3 ||
+            latRef == null || lonRef == null
+          ) {
+            info.innerHTML = '<span style="color:red;font-weight:bold">Foto dokumentasi kegiatan anda tidak memiliki metadata sehingga tidak dapat diproses</span>' +
+              '<br><span style="color:#555;font-size:0.95em">[Debug EXIF]<br>' +
+              'DateTimeOriginal: ' + (date ? JSON.stringify(date) : '<i>null</i>') + '<br>' +
+              'GPSLatitude: ' + (lat ? JSON.stringify(lat) : '<i>null</i>') + ' <br><b>typeof:</b> ' + (typeof lat) + '<br>' +
+              'GPSLongitude: ' + (lon ? JSON.stringify(lon) : '<i>null</i>') + ' <br><b>typeof:</b> ' + (typeof lon) + '<br>' +
+              'GPSLatitudeRef: ' + (latRef ? JSON.stringify(latRef) : '<i>null</i>') + ' <br><b>typeof:</b> ' + (typeof latRef) + '<br>' +
+              'GPSLongitudeRef: ' + (lonRef ? JSON.stringify(lonRef) : '<i>null</i>') + ' <br><b>typeof:</b> ' + (typeof lonRef) +
+              '</span>';
+            result.src = e.target.result;
+            downloadBtn.style.display = "none";
+            return;
+          }
+          let locationText = "Location not available";
+          let latitudeText = "Latitude: tidak tersedia";
+          let longitudeText = "Longitude: tidak tersedia";
+          if (lat && lon && latRef && lonRef) {
+            const latitude = toDecimal(lat, latRef);
+            const longitude = toDecimal(lon, lonRef);
+            locationText = await getLocation(latitude, longitude);
+            latitudeText = `Latitude: ${latitude.toFixed(6)}`;
+            longitudeText = `Longitude: ${longitude.toFixed(6)}`;
+          }
+          info.innerHTML = `
+            <strong>Timestamp:</strong> ${date}<br>
+            <strong>${latitudeText}</strong><br>
+            <strong>${longitudeText}</strong>
+          `;
+          originalImageData = e.target.result;
+          originalExifData = { date, lat, lon, latRef, lonRef, locationText };
+          renderAll(img, originalExifData);
+        });
+      } catch (err) {
+        clearTimeout(exifTimeout);
+        info.innerHTML = '<span style="color:red;font-weight:bold">Terjadi error saat membaca metadata EXIF: ' + err.message + '</span>';
+        result.src = e.target.result;
+        downloadBtn.style.display = "none";
+      }
+    };
+    img.onerror = function() {
+      info.innerHTML = '<span style="color:red;font-weight:bold">Gagal memuat gambar. Format file tidak didukung atau file rusak.</span>';
+      downloadBtn.style.display = "none";
     };
     img.src = e.target.result;
   };
