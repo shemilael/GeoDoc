@@ -161,7 +161,7 @@ function renderAll(img, exifData) {
     logoReader.readAsDataURL(logoFile);
   } else {
     // Watermark teks jika tidak ada logo
-    const watermarkText = '© Balai Wilayah Sungai Sumatera VI';
+    const watermarkText = '';
     ctx.save();
     ctx.globalAlpha = 1.0;
     ctx.font = `${watermarkSize}px ${fontFamily}`;
